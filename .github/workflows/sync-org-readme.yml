@@ -18,7 +18,7 @@ jobs:
 
       - name: Fetch README from source repo
         run: |
-          curl -sSL https://raw.githubusercontent.com/UCL-Biosciences/Biosciences-Comp-Support/main/README.md -o README.md
+          curl -sSL https://raw.githubusercontent.com/UCL-Biosciences/Biosciences-Comp-Support/main/README.md -o profile/README.md
 
       - name: Commit and push if changed
         run: |
