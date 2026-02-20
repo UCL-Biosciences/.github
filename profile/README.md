@@ -1,5 +1,5 @@
 # UCL Biosciences Computational Research
-Welcome to UCL Biosciences' github, where we store Divsion-related code, training material and other information.
+Welcome to UCL Biosciences' github, where we store Divsion-related code, training material and other information. Our Data Science team and [computational experts](https://www.ucl.ac.uk/life-sciences/computational-biology-0) are promoting reproducible, FAIR and open science across the Division.
 
 [This repository](https://github.com/UCL-Biosciences/Biosciences-Comp-Support) provides information about computational research support activities in UCL's Division of Biosciences. It is intended as a reference point for internal collaborators and external visitors who want to understand our scope, events, and how to engage with us.
 
@@ -37,21 +37,11 @@ Contact us early in your project to discuss requirements or explore automation a
 The Biosciences Data Science team supports and/or maintains:
 - [Auto-Prot](https://github.com/UCL-Biosciences/Auto-Prot)- a pipeline for **automating the analysis** of mass spec **proteomic data**.
 - **Computational Training for Biologists at UCL**. We hope to run this annually. Material from the initial series is available [here](https://github.com/UCL-Biosciences/2025_Biosciences_Computational_Training_Material).
-- **Image analysis.** We are working with the [Biosciences Microscopy facility](https://www.uclccmd.co.uk/) to support repeatable and reproducible image analysis using python. Get in touch if you would like support with that.
+- **Image analysis.** We are working with the [Biosciences Microscopy facility](https://www.uclccmd.co.uk/) to support repeatable and reproducible image analysis using python. From Tuesday March 10th 2026, we will have **fortnightly drop-ins** where all image analysis chat is welcome. Bring data, questions or general discussion to the Starling Room, 10:30 - 11:30! Contact for more details: biosciences.imaging@ucl.ac.uk. 
 - We can offer support for **analysing RNA Seq data** with [**nextflow/nf-core**](https://nf-co.re/rnaseq/). nf-core/rnaseq is a bioinformatics pipeline that can be used to analyse RNA sequencing data obtained from organisms with a reference genome and annotation. It takes a samplesheet with FASTQ files or pre-aligned BAM files as input, performs quality control (QC), trimming and (pseudo-)alignment, and produces a gene expression matrix and extensive QC report.
 - **General support **for using** ARC HPCs (Myriad and Kathleen)**, including setting up accounts, accessing via ssh, transferring files and submitting jobs.
 
 UCL has a Slack workspace dedicated to discussing computational questions. It's a great place to ask for advice on all thing computational! Let us know if you want to join by [opening an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-an-issue) in this repo.
-
-## Drop-ins
-Come and discuss any data science related problem in person! I will be in the Darwin Common Room every other Thursday, 10-11. Upcoming dates:
-
-- February: 19th
-- March: 5th and 19th
-- April: 2nd, 16th, 30th
-- May: 14th and 28th
-
-Or book a time to meet using this [booking link](https://outlook.office.com/bookwithme/user/d23d2d9663fa4276b318d8ae8f40ccbb@ucl.ac.uk/meetingtype/GP1vEk6SdU6fTvgYLBKK8Q2?anonymous&ismsaljsauthenabled&ep=mlink).
 
 ## Events
 The table below lists upcoming and recent events. It is automatically generated from individual event files in the `events/` folder. To add an event follow the instructions in `events/add-an-event.md`. A GitHub Action will update this table automatically.
