@@ -17,7 +17,7 @@ The Data Science team helps researchers plan, run, and maintain computational an
 |---|---|
 | [Auto-Prot](https://github.com/UCL-Biosciences/Auto-Prot) | Pipeline for automated mass spec proteomics analysis |
 | [Computational Training 2025](https://github.com/UCL-Biosciences/2025_Biosciences_Computational_Training_Material) | Materials from our annual training series for biologists |
-| Image Analysis | [Fortnightly drop-ins](https://www.uclccmd.co.uk/drop-in) (Starling Room, 10:30–11:30) supporting reproducible image analysis with Python. Contact: biosciences.imaging@ucl.ac.uk |
+| Image Analysis | [Fortnightly drop-ins](https://www.uclccmd.co.uk/drop-in) (Darwin Common Room, 10:30–11:30) supporting reproducible image analysis with Python. Contact: biosciences.imaging@ucl.ac.uk |
 | nextflow/nf-core | Support for automated, reproducible pipelines including [nf-core/rnaseq](https://nf-co.re/rnaseq). |
 | [UCL Comp Guides](https://github.com/UCL-Biosciences/Biosciences-Comp-Support/tree/main/UCL_comp_guides) | Guides for navigating UCL's computational resources including data storage, sharing and using HPCs |
 
@@ -49,7 +49,7 @@ The table below lists upcoming and recent events. It is automatically generated 
 
 | Date | Title | Location | Description | Link |
 |------|-------|----------|-------------|------|
-| 2026-01-21 | AI-powered Life Science Data Analysis Workshop | online | A free, practical session on using ChatGPT and Claude Code to speed up neuroscience and life science data analysis. Seats are limited, register today! | [link](https://events.zoom.us/ev/Ahyi_TfHIfPJIDoZIkLCMUijLOYYN7EtMkYwKvDTLJqCuxMJgtlk~AvdQa-5vIjsMxKeY7rq5LTflZiU5eWjz20SU4xjNX94W9TzSxVzXvBr0e5DZHGZl3onIRHE0GM7QA7SHecgk8GMgGA) |
+| – | – | – | – | – |
 
 <!-- EVENTS:END -->
 
