@@ -1,0 +1,24 @@
+name: Project checks
+
+# Checks file sizes, file names and README placeholders.
+# Only the file size check fails the run; the others appear as warnings.
+# Settings are at the top of .github/scripts/check_project.py
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run project checks
+        run: python .github/scripts/check_project.py
