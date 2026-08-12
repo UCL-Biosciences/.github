@@ -1,0 +1,58 @@
+name: Apply project template
+
+# Adds the standard project structure to repositories in the organisation that
+# do not already have it. Runs weekly, or on demand for a single repository.
+#
+# Empty repositories get the structure pushed straight to main.
+# Repositories with content get a pull request adding only the missing files.
+# Nothing is ever overwritten or deleted.
+#
+# Setup:
+#   1. Put this file in the organisation's .github repository
+#   2. Set the repository variables ORG and TEMPLATE_REPO
+#   3. Add a secret ORG_TOKEN with repo write access across the organisation
+#
+# Start with DRY_RUN on to see what it would do.
+
+on:
+  schedule:
+    - cron: "0 7 * * 1"      # Mondays, 07:00 UTC
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: "Single repository name (leave blank for all)"
+        required: false
+        type: string
+      dry_run:
+        description: "Report only, change nothing"
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Configure git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Apply the template
+        env:
+          GH_TOKEN: ${{ secrets.ORG_TOKEN }}
+          ORG: ${{ vars.ORG }}
+          TEMPLATE_REPO: ${{ vars.TEMPLATE_REPO }}
+          ONLY_REPO: ${{ inputs.repo }}
+          DRY_RUN: ${{ inputs.dry_run || 'false' }}
+          MAX_REPOS: "10"
+        run: python .github/scripts/apply_template.py
