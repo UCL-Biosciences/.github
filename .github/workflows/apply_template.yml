@@ -1,7 +1,11 @@
 name: Apply project template
 
-# Adds the standard project structure to repositories in the organisation that
-# do not already have it. Runs weekly, or on demand for a single repository.
+# Adds the standard project structure to new repositories in the organisation.
+# Runs weekly, or on demand for a single repository.
+#
+# Only repositories created on or after CREATED_AFTER are considered, so
+# existing repositories are left alone. Naming a repository on a manual run
+# overrides that, for the occasional older repository you do want it applied to.
 #
 # Empty repositories get the structure pushed straight to main.
 # Repositories with content get a pull request adding only the missing files.
@@ -9,10 +13,10 @@ name: Apply project template
 #
 # Setup:
 #   1. Put this file in the organisation's .github repository
-#   2. Set the repository variables ORG and TEMPLATE_REPO
+#   2. Set the repository variables ORG, TEMPLATE_REPO and CREATED_AFTER
 #   3. Add a secret ORG_TOKEN with repo write access across the organisation
 #
-# Start with DRY_RUN on to see what it would do.
+# Start with Report only ticked to see what it would do.
 
 on:
   schedule:
@@ -52,6 +56,7 @@ jobs:
           GH_TOKEN: ${{ secrets.ORG_TOKEN }}
           ORG: ${{ vars.ORG }}
           TEMPLATE_REPO: ${{ vars.TEMPLATE_REPO }}
+          CREATED_AFTER: ${{ vars.CREATED_AFTER }}
           ONLY_REPO: ${{ inputs.repo }}
           DRY_RUN: ${{ inputs.dry_run || 'false' }}
           MAX_REPOS: "10"
