@@ -10,13 +10,18 @@ For each repository in the organisation that is missing the marker file:
 
 Nothing already in the repository is overwritten, and no file is deleted.
 
+Only repositories created on or after CREATED_AFTER are considered, so
+installing this does not open pull requests across everything that already
+exists. Naming a single repository on a manual run overrides the cutoff.
+
 Environment:
-  GH_TOKEN      token with repo write access across the organisation
-  ORG           organisation login
-  TEMPLATE_REPO owner/name of the template repository
-  ONLY_REPO     optional, a single repository name to act on
-  MAX_REPOS     optional, safety limit per run (default 10)
-  DRY_RUN       optional, 'true' to report without changing anything
+  GH_TOKEN       token with repo write access across the organisation
+  ORG            organisation login
+  TEMPLATE_REPO  owner/name of the template repository
+  CREATED_AFTER  date, YYYY-MM-DD; repositories created before it are ignored
+  ONLY_REPO      optional, a single repository name to act on
+  MAX_REPOS      optional, safety limit per run (default 10)
+  DRY_RUN        optional, 'true' to report without changing anything
 """
 
 from __future__ import annotations
@@ -27,6 +32,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from datetime import date, datetime
 from pathlib import Path
 
 MARKER = ".project-structure"
@@ -34,6 +40,7 @@ MARKER = ".project-structure"
 ORG = os.environ["ORG"]
 TEMPLATE_REPO = os.environ["TEMPLATE_REPO"]
 ONLY_REPO = os.environ.get("ONLY_REPO", "").strip()
+CREATED_AFTER = os.environ.get("CREATED_AFTER", "").strip()
 MAX_REPOS = int(os.environ.get("MAX_REPOS", "10"))
 DRY_RUN = os.environ.get("DRY_RUN", "").lower() == "true"
 TOKEN = os.environ["GH_TOKEN"]
@@ -68,8 +75,24 @@ def git(*args: str, cwd: str, check: bool = True) -> str:
     return result.stdout
 
 
+def cutoff() -> date:
+    """The date before which repositories are ignored.
+
+    Defaults to today, so installing this without setting CREATED_AFTER affects
+    only repositories created from now on.
+    """
+    if not CREATED_AFTER:
+        return date.today()
+    try:
+        return date.fromisoformat(CREATED_AFTER)
+    except ValueError:
+        raise SystemExit(
+            f"CREATED_AFTER is '{CREATED_AFTER}'. It must be a date, as YYYY-MM-DD."
+        )
+
+
 def list_repos() -> list[dict]:
-    """Repositories in the organisation, excluding archived ones and the template."""
+    """Repositories in the organisation that this workflow should consider."""
     raw = gh(
         "repo",
         "list",
@@ -78,17 +101,29 @@ def list_repos() -> list[dict]:
         "1000",
         "--no-archived",
         "--json",
-        "name,isEmpty,defaultBranchRef,isFork",
+        "name,isEmpty,defaultBranchRef,isFork,createdAt",
     )
     repos = json.loads(raw)
 
     skip = {TEMPLATE_REPO.split("/")[-1], ".github"}
     repos = [r for r in repos if r["name"] not in skip and not r["isFork"]]
 
+    # Naming a repository explicitly is a deliberate act, so the cutoff does
+    # not apply to it.
     if ONLY_REPO:
-        repos = [r for r in repos if r["name"] == ONLY_REPO]
+        return [r for r in repos if r["name"] == ONLY_REPO]
 
-    return repos
+    since = cutoff()
+    recent = []
+    for repo in repos:
+        created = datetime.fromisoformat(
+            repo["createdAt"].replace("Z", "+00:00")
+        ).date()
+        if created >= since:
+            recent.append(repo)
+
+    print(f"{len(recent)} of {len(repos)} repositories created on or after {since}.")
+    return recent
 
 
 def has_marker(repo: str) -> bool:
