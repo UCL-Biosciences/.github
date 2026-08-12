@@ -10,15 +10,15 @@ For each repository in the organisation that is missing the marker file:
 
 Nothing already in the repository is overwritten, and no file is deleted.
 
-Only repositories created on or after CREATED_AFTER are considered, so
+Only repositories created in the last WINDOW_DAYS days are considered, so
 installing this does not open pull requests across everything that already
-exists. Naming a single repository on a manual run overrides the cutoff.
+exists. Naming a single repository on a manual run overrides the window.
 
 Environment:
   GH_TOKEN       token with repo write access across the organisation
   ORG            organisation login
   TEMPLATE_REPO  owner/name of the template repository
-  CREATED_AFTER  date, YYYY-MM-DD; repositories created before it are ignored
+  WINDOW_DAYS    how far back to look, in days (default 8, to cover a weekly run)
   ONLY_REPO      optional, a single repository name to act on
   MAX_REPOS      optional, safety limit per run (default 10)
   DRY_RUN        optional, 'true' to report without changing anything
@@ -32,7 +32,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 MARKER = ".project-structure"
@@ -40,7 +40,7 @@ MARKER = ".project-structure"
 ORG = os.environ["ORG"]
 TEMPLATE_REPO = os.environ["TEMPLATE_REPO"]
 ONLY_REPO = os.environ.get("ONLY_REPO", "").strip()
-CREATED_AFTER = os.environ.get("CREATED_AFTER", "").strip()
+WINDOW_DAYS = os.environ.get("WINDOW_DAYS", "8").strip() or "8"
 MAX_REPOS = int(os.environ.get("MAX_REPOS", "10"))
 DRY_RUN = os.environ.get("DRY_RUN", "").lower() == "true"
 TOKEN = os.environ["GH_TOKEN"]
@@ -78,17 +78,15 @@ def git(*args: str, cwd: str, check: bool = True) -> str:
 def cutoff() -> date:
     """The date before which repositories are ignored.
 
-    Defaults to today, so installing this without setting CREATED_AFTER affects
-    only repositories created from now on.
+    A rolling window, matching the schedule the workflow runs on. Repositories
+    older than this are left alone, so installing this does not open pull
+    requests across everything that already exists.
     """
-    if not CREATED_AFTER:
-        return date.today()
     try:
-        return date.fromisoformat(CREATED_AFTER)
+        days = int(WINDOW_DAYS)
     except ValueError:
-        raise SystemExit(
-            f"CREATED_AFTER is '{CREATED_AFTER}'. It must be a date, as YYYY-MM-DD."
-        )
+        raise SystemExit(f"WINDOW_DAYS is '{WINDOW_DAYS}'. It must be a whole number.")
+    return date.today() - timedelta(days=days)
 
 
 def list_repos() -> list[dict]:
@@ -122,7 +120,7 @@ def list_repos() -> list[dict]:
         if created >= since:
             recent.append(repo)
 
-    print(f"{len(recent)} of {len(repos)} repositories created on or after {since}.")
+    print(f"{len(recent)} of {len(repos)} repositories created since {since}.")
     return recent
 
 
